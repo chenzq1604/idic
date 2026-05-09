@@ -1,0 +1,8 @@
+{
+  "clipboard_enabled": true,
+  "hotkey_enabled": true,
+  "hotkey": "ctrl+alt+t",
+  "minimize_to_tray": false,
+  "auto_startup": false,
+  "tts_rate": 150
+}
