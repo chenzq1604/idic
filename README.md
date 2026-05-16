@@ -1,8 +1,17 @@
 # iDic - 智能词典 (Electron + Vue 3 + Element Plus)
 
-## 🚀 启动方式
+## 🚀 安装与启动
 
-### 方式一：分别启动
+### 方式一：直接安装（推荐）
+
+前往 [Releases](https://github.com/chenzq1604/idic/releases) 页面下载最新的 `iDic Setup x.x.x.exe` 安装包，双击安装即可使用。
+
+- ✅ 无需安装 Node.js、Python 等开发环境
+- ✅ 无需手动编译和分别启动前后端服务
+- ✅ 安装后桌面自动生成快捷方式，双击即可运行
+- ✅ 前端和 Python 后端会自动一起启动
+
+### 方式二：开发模式分别启动
 
 1. **启动后端 (Python)**：
    ```bash
@@ -25,7 +34,7 @@
    npm run electron:dev
    ```
 
-### 方式二：一键启动
+### 方式三：一键启动
 
 创建一个 `start.bat` 来同时启动前端和后端（Windows）：
 ```batch
