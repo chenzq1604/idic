@@ -35,6 +35,82 @@ timeout /t 2
 start "Frontend" cmd /k "npm run dev"
 ```
 
+## 🤖 模型配置
+
+iDic 依赖大语言模型进行智能翻译解析，首次使用前需要配置模型。
+
+### 配置文件位置
+
+| 运行方式 | 配置文件路径 |
+|---------|------------|
+| 开发模式 | `resources/llm_configs.json` |
+| 安装后 | `%APPDATA%/iDic/llm_configs.json` |
+
+### 配置方法
+
+1. 复制模板文件并重命名：
+   ```bash
+   copy resources\llm_configs.json.example resources\llm_configs.json
+   ```
+
+2. 编辑 `llm_configs.json`，填入你的模型信息：
+   ```json
+   [
+     {
+       "name": "我的模型",
+       "api_key": "你的API Key",
+       "api_base": "https://api.example.com/v3",
+       "model_name": "model-name",
+       "is_active": true
+     }
+   ]
+   ```
+
+### 配置字段说明
+
+| 字段 | 必填 | 说明 |
+|------|------|------|
+| `name` | 是 | 配置名称，用于界面显示，可自定义 |
+| `api_key` | 是 | 大模型服务的 API Key |
+| `api_base` | 是 | API 地址，需兼容 OpenAI 格式 |
+| `model_name` | 是 | 模型标识，如 `gpt-4o`、`deepseek-chat` |
+| `is_active` | 否 | 是否为当前激活的模型，仅一个可设为 `true` |
+
+### 支持的模型服务
+
+iDic 兼容所有 OpenAI API 格式的模型服务，包括但不限于：
+
+- **火山引擎（豆包）** — `api_base`: `https://ark.cn-beijing.volces.com/api/v3`
+- **DeepSeek** — `api_base`: `https://api.deepseek.com/v3`
+- **OpenAI** — `api_base`: `https://api.openai.com/v3`
+- **硅基流动（SiliconFlow）** — `api_base`: `https://api.siliconflow.cn/v3`
+- **其他兼容服务** — 只需填入对应的 API 地址即可
+
+### 多模型配置
+
+可以同时配置多个模型，通过 `is_active` 切换当前使用的模型：
+
+```json
+[
+  {
+     "name": "DeepSeek",
+     "api_key": "sk-xxx",
+     "api_base": "https://api.deepseek.com/v3",
+     "model_name": "deepseek-chat",
+     "is_active": true
+  },
+  {
+     "name": "GPT-4o",
+     "api_key": "sk-yyy",
+     "api_base": "https://api.openai.com/v3",
+     "model_name": "gpt-4o",
+     "is_active": false
+  }
+]
+```
+
+> ⚠️ **安全提醒**：`llm_configs.json` 包含 API Key 等敏感信息，已被 `.gitignore` 排除，不会被上传到 Git 仓库。请勿将该文件提交到公开仓库。
+
 ## 🛠️ 技术栈
 
 - **前端**：Vue 3 + Element Plus + Vite
