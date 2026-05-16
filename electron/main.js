@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, Menu } = require('electron')
 const path = require('path')
 const { spawn } = require('child_process')
 const net = require('net')
@@ -143,6 +143,9 @@ function createWindow() {
     mainWindow.once('ready-to-show', () => {
         mainWindow.show()
     })
+
+    mainWindow.setMenuBarVisibility(false)
+    mainWindow.setAutoHideMenuBar(true)
 
     mainWindow.on('closed', () => {
         mainWindow = null
