@@ -246,6 +246,10 @@
         <el-form-item label="自动发音">
           <el-switch v-model="settingsForm.autoPronounce" />
         </el-form-item>
+        <el-form-item label="关闭时隐藏">
+          <el-switch v-model="settingsForm.minimizeToTray" />
+          <span style="margin-left: 10px; color: #909399; font-size: 12px;">开启后关闭窗口将隐藏到系统托盘</span>
+        </el-form-item>
       </el-form>
 
       <el-divider content-position="left">网络代理</el-divider>
@@ -305,7 +309,7 @@
     <el-dialog v-model="showAbout" title="关于 iDic" width="400px">
       <div style="text-align: center; padding: 20px;">
         <h2 style="color: #409EFF;">iDic - 智能词典</h2>
-        <p>版本: 1.0.0</p>
+        <p>版本: {{ appVersion }}</p>
         <p>一款基于 Vue 3 + Electron 的现代化词典软件</p>
       </div>
     </el-dialog>
@@ -361,6 +365,7 @@ const testTime = ref('')
 const showSettings = ref(false)
 const showWordbook = ref(false)
 const showAbout = ref(false)
+const appVersion = ref('1.1.0')
 
 const modelList = ref([])
 const currentModelId = ref('')
@@ -369,7 +374,8 @@ const isNewModel = ref(false)
 
 const settingsForm = ref({
   fontSize: 16,
-  autoPronounce: false
+  autoPronounce: false,
+  minimizeToTray: false
 })
 
 const proxyForm = ref({
@@ -718,6 +724,13 @@ const saveSettings = async () => {
   } catch (err) {
     console.error('保存代理配置失败:', err)
   }
+  if (window.electronAPI) {
+    try {
+      await window.electronAPI.setMinimizeToTray(settingsForm.value.minimizeToTray)
+    } catch (err) {
+      console.error('保存托盘设置失败:', err)
+    }
+  }
   showSettings.value = false
   ElMessage.success('设置已保存')
 }
@@ -801,6 +814,17 @@ onMounted(async () => {
     const savedSettings = localStorage.getItem('idic_settings')
     if (savedSettings) {
         settingsForm.value = JSON.parse(savedSettings)
+    }
+
+    if (window.electronAPI) {
+        try {
+            const version = await window.electronAPI.getAppVersion()
+            if (version) appVersion.value = version
+            const traySetting = await window.electronAPI.getMinimizeToTray()
+            settingsForm.value.minimizeToTray = traySetting
+        } catch (err) {
+            console.error('读取Electron设置失败:', err)
+        }
     }
     
     try {

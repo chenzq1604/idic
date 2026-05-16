@@ -1,6 +1,6 @@
 {
   "name": "idic",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "iDic - 智能词典",
   "main": "electron/main.js",
   "author": "iDic Team",
