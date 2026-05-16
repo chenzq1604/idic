@@ -6,6 +6,7 @@ backend-dist/
 __pycache__/
 *.pyc
 *.pyo
+*.spec
 *.exe
 *.zip
 *.db

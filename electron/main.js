@@ -118,11 +118,13 @@ function waitForBackend(maxRetries = 30, interval = 500) {
 }
 
 function createWindow() {
+    const iconPath = path.join(__dirname, '..', 'public', 'icon.png')
     mainWindow = new BrowserWindow({
         width: 1400,
         height: 900,
         minWidth: 1200,
         minHeight: 700,
+        icon: iconPath,
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
