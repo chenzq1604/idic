@@ -16,4 +16,5 @@ idic_cache.json
 idic_history.json
 idic_models.json
 idic_proxy.json
+resources/llm_configs.json
 .trae/

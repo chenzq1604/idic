@@ -1,0 +1,9 @@
+[
+  {
+    "name": "模型名称",
+    "api_key": "在此填入你的API Key",
+    "api_base": "在此填入API地址",
+    "model_name": "模型标识",
+    "is_active": true
+  }
+]
