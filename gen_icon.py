@@ -1,4 +1,4 @@
-"""从 idic.jpg 生成应用图标 (icon.ico 和 icon.png)"""
+"""从 idic1.jpg 生成应用图标 (icon.ico 和 icon.png)"""
 import os
 from PIL import Image
 
@@ -6,7 +6,7 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 public_dir = os.path.join(base_dir, "public")
 os.makedirs(public_dir, exist_ok=True)
 
-jpg_path = os.path.join(base_dir, "idic.jpg")
+jpg_path = os.path.join(base_dir, "idic1.jpg")
 img = Image.open(jpg_path)
 
 if img.mode != "RGBA":
