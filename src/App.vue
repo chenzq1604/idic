@@ -41,8 +41,9 @@
                   size="large"
                   placeholder="请输入要查询的单词或句子"
                   @keyup.enter="handleSearch"
-                  @focus="showHistory = queryHistory.length > 0"
+                  @focus="onInputFocus"
                   @blur="hideHistory"
+                  @input="onInputChange"
                   class="search-input"
                   clearable>
                   <template #prefix>
@@ -50,8 +51,16 @@
                   </template>
                 </el-input>
                 
+                <!-- 单词建议下拉 -->
+                <div v-if="showSuggestions && suggestions.length > 0" class="suggestions-dropdown">
+                    <div v-for="(word, index) in suggestions" :key="index" 
+                         class="suggestion-item" @mousedown.prevent="selectSuggestion(word)">
+                        {{ word }}
+                    </div>
+                </div>
+
                 <!-- 历史记录下拉 -->
-                <div v-if="showHistory && queryHistory.length > 0" class="history-dropdown">
+                <div v-if="showHistory && queryHistory.length > 0 && !showSuggestions" class="history-dropdown">
                     <div v-for="(item, index) in queryHistory" :key="index" 
                          class="history-item" @click="selectFromHistory(item)">
                         <div class="history-word">{{ item.word }}</div>
@@ -365,7 +374,10 @@ const testTime = ref('')
 const showSettings = ref(false)
 const showWordbook = ref(false)
 const showAbout = ref(false)
-const appVersion = ref('1.1.0')
+const appVersion = ref('1.2.0')
+const showSuggestions = ref(false)
+const suggestions = ref([])
+let suggestTimer = null
 
 const modelList = ref([])
 const currentModelId = ref('')
@@ -547,7 +559,56 @@ const selectFromHistory = (item) => {
 }
 
 const hideHistory = () => {
-    setTimeout(() => { showHistory.value = false }, 200)
+    setTimeout(() => { showHistory.value = false; showSuggestions.value = false }, 200)
+}
+
+const onInputFocus = () => {
+    if (suggestions.value.length > 0) {
+        showSuggestions.value = true
+    } else {
+        showHistory.value = queryHistory.value.length > 0
+    }
+}
+
+const onInputChange = () => {
+    if (suggestTimer) clearTimeout(suggestTimer)
+    const text = searchText.value.trim()
+    if (!text || text.length < 1) {
+        suggestions.value = []
+        showSuggestions.value = false
+        return
+    }
+    const hasChinese = /[\u4e00-\u9fff]/.test(text)
+    if (hasChinese) {
+        suggestions.value = []
+        showSuggestions.value = false
+        return
+    }
+    if (text.includes(' ')) {
+        suggestions.value = []
+        showSuggestions.value = false
+        return
+    }
+    suggestTimer = setTimeout(async () => {
+        try {
+            const res = await axios.get(`${API_BASE}/suggest`, {
+                params: { prefix: text, limit: 10 }
+            })
+            suggestions.value = res.data.suggestions || []
+            showSuggestions.value = suggestions.value.length > 0
+            showHistory.value = false
+        } catch (err) {
+            suggestions.value = []
+            showSuggestions.value = false
+        }
+    }, 300)
+}
+
+const selectSuggestion = (word) => {
+    searchText.value = word
+    showSuggestions.value = false
+    suggestions.value = []
+    handleSearch()
 }
 
 const handleSearch = async () => {
@@ -928,6 +989,39 @@ onMounted(async () => {
 
 .model-select {
   width: 160px;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #E4E7ED;
+  border-radius: 8px;
+  margin-top: 4px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.suggestion-item {
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #F5F7FA;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: #303133;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background: #ECF5FF;
+  color: #409EFF;
 }
 
 .history-dropdown {

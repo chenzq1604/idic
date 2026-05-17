@@ -542,6 +542,19 @@ async def query_dict(word: str):
         return f"<p>查询失败: {str(e)}</p>"
 
 
+@app.get("/suggest")
+async def suggest_words(prefix: str, limit: int = 10):
+    """根据前缀获取单词建议API"""
+    try:
+        has_chinese = any('\u4e00' <= c <= '\u9fff' for c in prefix)
+        if has_chinese:
+            return {"suggestions": []}
+        suggestions = dict_engine.suggest(prefix, limit)
+        return {"suggestions": suggestions}
+    except Exception as e:
+        return {"suggestions": [], "error": str(e)}
+
+
 @app.get("/ai")
 async def query_ai(word: str, direction: str = "en2zh"):
     """AI解析查询API"""
