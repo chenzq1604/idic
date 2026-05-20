@@ -47,7 +47,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # 桌面应用，后端仅监听127.0.0.1，安全风险可控
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -318,7 +318,7 @@ async def add_model(item: ModelConfigItem):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "操作失败，请检查配置"}
 
 
 @app.put("/models/{model_id}")
@@ -344,7 +344,7 @@ async def update_model(model_id: str, item: ModelConfigItem):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "操作失败，请检查配置"}
 
 
 @app.delete("/models/{model_id}")
@@ -363,7 +363,7 @@ async def delete_model(model_id: str):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "操作失败，请检查配置"}
 
 
 @app.post("/models/active/{model_id}")
@@ -380,7 +380,7 @@ async def set_active_model(model_id: str):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "操作失败，请检查配置"}
 
 
 def _update_model_test_result(model_id, result_msg, success, test_time=""):
@@ -496,7 +496,7 @@ async def save_proxy_api(config: ProxyConfig):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return {"success": False, "message": str(e)}
+        return {"success": False, "message": "操作失败，请检查配置"}
 
 
 @app.get("/proxy")
@@ -539,7 +539,7 @@ async def query_dict(word: str):
                 return "".join(parts)
         return "<p>暂无词典释义</p>"
     except Exception as e:
-        return f"<p>查询失败: {str(e)}</p>"
+        return "<p>查询失败，请稍后重试</p>"
 
 
 @app.get("/suggest")
@@ -552,7 +552,7 @@ async def suggest_words(prefix: str, limit: int = 10):
         suggestions = dict_engine.suggest(prefix, limit)
         return {"suggestions": suggestions}
     except Exception as e:
-        return {"suggestions": [], "error": str(e)}
+        return {"suggestions": [], "error": "查询失败"}
 
 
 @app.get("/ai")
@@ -587,7 +587,7 @@ async def query_ai(word: str, direction: str = "en2zh"):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        return f"<p style='color: #F56C6C;'>AI 解析失败: {str(e)}</p><p>请检查您的配置</p>"
+        return f"<p style='color: #F56C6C;'>AI 解析失败，请检查您的配置</p>"
 
 
 @app.get("/ai/stream")
@@ -640,7 +640,7 @@ async def query_ai_stream(word: str, direction: str = "en2zh"):
         except Exception as e:
             import traceback
             traceback.print_exc()
-            yield f"data: {json.dumps({'error': str(e)}, ensure_ascii=False)}\n\n"
+            yield f"data: {json.dumps({'error': 'AI 解析失败，请检查配置'}, ensure_ascii=False)}\n\n"
             yield "data: [DONE]\n\n"
 
     return StreamingResponse(stream_generate(), media_type="text/event-stream")

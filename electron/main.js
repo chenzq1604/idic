@@ -199,6 +199,8 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: false,
             contextIsolation: true,
+            // webSecurity: false 是必需的，因为打包后前端从 file:// 协议加载，
+            // 需要跨域请求后端 http://127.0.0.1:8000，桌面应用安全风险可控
             webSecurity: false,
             preload: preloadPath
         },

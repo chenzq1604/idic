@@ -18,3 +18,10 @@ idic_models.json
 idic_proxy.json
 resources/llm_configs.json
 .trae/
+.env
+.env.*
+*.log
+*.pem
+*.key
+.DS_Store
+Thumbs.db

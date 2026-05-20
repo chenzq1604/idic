@@ -21,14 +21,11 @@ def get_connection(db_name="idic.db"):
 
 
 def execute_query(sql, params=None, db_name="idic.db"):
-    """执行查询SQL并返回结果"""
+    """执行查询SQL并返回结果（强制参数化查询）"""
     conn = get_connection(db_name)
     try:
         cursor = conn.cursor()
-        if params:
-            cursor.execute(sql, params)
-        else:
-            cursor.execute(sql)
+        cursor.execute(sql, params or ())
         rows = cursor.fetchall()
         return [dict(row) for row in rows]
     finally:
@@ -36,14 +33,11 @@ def execute_query(sql, params=None, db_name="idic.db"):
 
 
 def execute_update(sql, params=None, db_name="idic.db"):
-    """执行更新SQL"""
+    """执行更新SQL（强制参数化查询）"""
     conn = get_connection(db_name)
     try:
         cursor = conn.cursor()
-        if params:
-            cursor.execute(sql, params)
-        else:
-            cursor.execute(sql)
+        cursor.execute(sql, params or ())
         conn.commit()
         return cursor.lastrowid
     finally:

@@ -1,6 +1,6 @@
 {
   "name": "idic",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "iDic - 智能词典",
   "main": "electron/main.js",
   "author": "iDic Team",
@@ -33,7 +33,7 @@
     "appId": "com.idic.app",
     "productName": "iDic",
     "publish": null,
-    "asar": false,
+    "asar": true,
     "directories": {
       "output": "release"
     },
